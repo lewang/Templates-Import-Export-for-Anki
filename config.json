@@ -1,6 +1,7 @@
 {
   "delimiter between front and back template": "```\n",
   "CSS file name": "style.css",
+  "common epilog file name": "common_epilog.html",
   "insert global CSS before individual ones of all note types": false,
   "filename extensions for card template files": "",
   "last_dir": ""

@@ -5,6 +5,7 @@ _config_map = {
     "delimiter": "delimiter between front and back template",
     "mergeCSS": "insert global CSS before individual ones of all note types",
     "cssName": "CSS file name",
+    "epilogName": "common epilog file name",
     "tmplExt": "filename extensions for card template files"
 }
 

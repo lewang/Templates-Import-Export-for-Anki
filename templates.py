@@ -15,15 +15,17 @@ _anki_back = "afmt"
 # config
 _delimiter: str = "```\n"
 _css_name: str = "style.css"
+_epilog_name: str = "common_epilog.html"
 _tmpl_ext: str = ""
 _merge_css: bool = False
 
 
 def _reload_config():
     utils.reload_config()
-    global _delimiter, _css_name, _tmpl_ext, _merge_css
+    global _delimiter, _css_name, _epilog_name, _tmpl_ext, _merge_css
     _delimiter = utils.cfg("delimiter")
     _css_name = utils.cfg("cssName")
+    _epilog_name = utils.cfg("epilogName")
     _tmpl_ext = utils.cfg("tmplExt")
     _merge_css = utils.cfg("mergeCSS")
 
@@ -40,6 +42,12 @@ def import_tmpls():
     if os.path.exists(file):
         with open(file, "r", encoding="utf-8") as f:
             global_css = f.read()
+
+    common_epilog = None
+    epilog_file = path.join(root, _epilog_name)
+    if os.path.exists(epilog_file):
+        with open(epilog_file, "r", encoding="utf-8") as f:
+            common_epilog = f.read()
 
     count_notetype = 0
     count_template = 0
@@ -67,6 +75,9 @@ def import_tmpls():
             if os.path.exists(file):
                 with open(file, "r", encoding="utf-8") as f:
                     tmpl[_anki_front], _, tmpl[_anki_back] = f.read().partition(_delimiter)
+                if common_epilog:
+                    tmpl[_anki_front] += "\n<!-- common_epilog.html -->\n" + common_epilog
+                    tmpl[_anki_back] += "\n<!-- common_epilog.html -->\n" + common_epilog
                 count += 1
         try:
             window.col.models.save(nt)

@@ -18,10 +18,15 @@ Functions & Things to notice
   - An extra CSS file can be present in the source directory (compared to what **Export** outputs),
     regarded as the global CSS. When the CSS file is missing under a note type folder, the global
     CSS will be used if present. The behavior when both are present is **configur**able.
+  - An extra common epilog HTML file can be present in the source directory. When present, its
+    contents will be appended to both the front and back of every card template, prefixed with a
+    marker comment. This is useful for shared JavaScript or other common footer content.
 + **Configure**: some configurable settings in JSON format
   - *delimiter between front and back template*: the demimiter for separating front & back templates
     in each card. Default: `` ```<br> `` (``<br>`` is line break)
   - *CSS file name*: the filename for all CSS files. Default: ``style.css``
+  - *common epilog file name*: the filename for the common epilog HTML file. Default:
+    ``common_epilog.html``
   - *insert global CSS before individual ones of all note types*: if ``true``, global CSS file will
     be inserted before each note type's CSS file. Otherwise, global CSS will be ignored if there is
     a CSS file for the note type. Default: ``false``
