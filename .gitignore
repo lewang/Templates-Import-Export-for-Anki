@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude/
+
+# Anki add-on package files
+*.ankiaddon
+*.zip
+
+# Anki metadata
+meta.json
+
+# OS files
+.DS_Store
+Thumbs.db
