@@ -1,5 +1,4 @@
-from PyQt5 import QtCore
-from aqt import mw as window, utils, qt, addons
+from aqt import mw as window, utils, qt, addons, Qt
 import aqt
 from . import templates
 import os
@@ -15,7 +14,7 @@ def _help():
         with open(file, "r", encoding="utf-8") as f:
             doc = f.read()
         box = aqt.QMessageBox(window)
-        box.setTextFormat(QtCore.Qt.MarkdownText)
+        box.setTextFormat(Qt.TextFormat.MarkdownText)
         box.setText(doc)
         box.exec()
     else:
@@ -52,7 +51,16 @@ def show_error(msg: str, err_type: str = "all"):
 
 
 def get_dir():
-    folder = aqt.QFileDialog.getExistingDirectory(window, "Select a Directory")
+    config = window.addonManager.getConfig(__name__)
+    last_dir = config["last_dir"]
+    if last_dir is not None and os.path.isdir(last_dir):
+        folder = aqt.QFileDialog.getExistingDirectory(window, "Select a Directory", last_dir)
+    else:
+        folder = aqt.QFileDialog.getExistingDirectory(window, "Select a Directory")
+
+    config["last_dir"] = folder
+    window.addonManager.writeConfig(__name__, config)
+
     return folder if len(folder) != 0 else None
 
 

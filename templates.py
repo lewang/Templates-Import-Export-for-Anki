@@ -45,7 +45,7 @@ def import_tmpls():
     count_template = 0
     count_no_css = 0
     for name in notetypes:
-        nt = window.col.models.byName(name)
+        nt = window.col.models.by_name(name)
         if not nt: continue
 
         count = 0
@@ -76,7 +76,7 @@ def import_tmpls():
         count_notetype += 1
         count_template += count
     gui.notify("imported (Template: {}, CSS: {} from NoteType:{})".format(count_template, count_notetype - count_no_css,
-                                                                          count_notetype))
+                                                                        count_notetype))
 
 
 def export_tmpls():
@@ -95,10 +95,17 @@ def export_tmpls():
         notetype_name_stripped = notetype_name.strip()
         if notetype_name_stripped != notetype_name:
             gui.show_error("⚠ Leading and/or trailing spaces detected in notetype name \"{}\". They have be removed "
-                           "on export. Before reimporting the template, you will need to remove them in the notetype "
-                           "name.".format(notetype_name))
+                            "on export. Before reimporting the template, you will need to remove them in the notetype "
+                            "name.".format(notetype_name))
         notetype_path = path.join(root, notetype_name_stripped)
-        os.makedirs(notetype_path, exist_ok=True)
+        try:
+            os.makedirs(notetype_path, exist_ok=True)
+        except Exception as e:
+            gui.show_error(f"⚠ Export failed. "
+                            "Perhaps Note type name contains invalid strings, try renaming it. "
+                            "[ Notetype name ] {notetype_name} "
+                            "[ Error ] {error} ".format(error=e,notetype_name=notetype_name))
+            continue
         if _anki_css in nt:
             with open(path.join(notetype_path, _css_name), "w", encoding="utf-8") as f:
                 f.write(nt[_anki_css])
@@ -108,9 +115,17 @@ def export_tmpls():
             except KeyError:
                 gui.show_error("A template in notetype \"{}\" has no name!!".format(notetype_name))
                 continue
-            with open(path.join(notetype_path, tmpl_name + _tmpl_ext), "w", encoding="utf-8") as f:
-                if _anki_front in tmpl and _anki_back in tmpl:
-                    f.write(tmpl[_anki_front] + _delimiter + tmpl[_anki_back])
+            try:
+                with open(path.join(notetype_path, tmpl_name + _tmpl_ext), "w", encoding="utf-8") as f:
+                    if _anki_front in tmpl and _anki_back in tmpl:
+                        f.write(tmpl[_anki_front] + _delimiter + tmpl[_anki_back])
+            except Exception as e:
+                gui.show_error(f"⚠ Export failed. "
+                                "Perhaps Card type name contains invalid strings, try renaming it. "
+                                "[ Notetype name ] {notetype_name} "
+                                "[ Cardtype name ] {tmpl_name} "
+                                "[ Error ] {error} ".format(error=e,tmpl_name=tmpl_name,notetype_name=notetype_name))
+                continue
             count_template += 1
         count_notetype += 1
     gui.notify("exported (Template: {} from NoteType:{})".format(count_template, count_notetype))
